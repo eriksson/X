@@ -49,7 +49,7 @@ goog.require('goog.style');
  * @constructor
  * @extends X.renderer
  */
-X.renderer3D = function() {
+X.renderer3D = function () {
 
   //
   // call the standard constructor of X.renderer
@@ -135,7 +135,7 @@ X.renderer3D = function() {
    * @protected
    */
   this._center = [0, 0, 0];
-  
+
   /**
    * The background color.
    *
@@ -254,7 +254,7 @@ goog.inherits(X.renderer3D, X.renderer);
  *
  * @return {Object} The configuration.
  */
-X.renderer3D.prototype.__defineGetter__('config', function() {
+X.renderer3D.prototype.__defineGetter__('config', function () {
 
   return this._config;
 
@@ -269,7 +269,7 @@ X.renderer3D.prototype.__defineGetter__('config', function() {
  *
  * @public
  */
-X.renderer3D.prototype.resetBoundingBox = function() {
+X.renderer3D.prototype.resetBoundingBox = function () {
 
   this._minX = null;
   this._maxX = null;
@@ -286,7 +286,7 @@ X.renderer3D.prototype.resetBoundingBox = function() {
 /**
  * @inheritDoc
  */
-X.renderer3D.prototype.onHover_ = function(event) {
+X.renderer3D.prototype.onHover_ = function (event) {
 
   goog.base(this, 'onHover_', event);
 
@@ -298,10 +298,10 @@ X.renderer3D.prototype.onHover_ = function(event) {
 /**
  * @inheritDoc
  */
-X.renderer3D.prototype.init = function() {
+X.renderer3D.prototype.init = function () {
 
   // call the superclass' init method
-  goog.base(this, 'init', "experimental-webgl");
+  goog.base(this, 'init', "webgl");
 
   //
   // Step2: Configure the context
@@ -313,12 +313,12 @@ X.renderer3D.prototype.init = function() {
     // configure opacity to 0.0 to overwrite the viewport background-color by
     // the container color
     this._context.clearColor(this._bgColor[0], this._bgColor[1], this._bgColor[2], 0.0);
-    
+
     // enable transparency
     this._context.enable(this._context.BLEND);
     this._context.blendEquation(this._context.FUNC_ADD);
     this._context.blendFunc(this._context.SRC_ALPHA,
-        this._context.ONE_MINUS_SRC_ALPHA);
+      this._context.ONE_MINUS_SRC_ALPHA);
     // .. and depth test
     this._context.enable(this._context.DEPTH_TEST);
     // .. with perspective rendering
@@ -328,7 +328,7 @@ X.renderer3D.prototype.init = function() {
 
     // clear color and depth buffer
     this._context.clear(this._context.COLOR_BUFFER_BIT |
-        this._context.DEPTH_BUFFER_BIT);
+      this._context.DEPTH_BUFFER_BIT);
 
     if (this._config['PICKING_ENABLED']) {
       //
@@ -348,32 +348,32 @@ X.renderer3D.prototype.init = function() {
       this._context.bindTexture(this._context.TEXTURE_2D, pickTexture);
 
       this._context.texImage2D(this._context.TEXTURE_2D, 0, this._context.RGB,
-          this._width, this._height, 0, this._context.RGB,
-          this._context.UNSIGNED_BYTE, null);
+        this._width, this._height, 0, this._context.RGB,
+        this._context.UNSIGNED_BYTE, null);
 
       this._context.texParameteri(this._context.TEXTURE_2D,
-          this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE);
+        this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE);
       this._context.texParameteri(this._context.TEXTURE_2D,
-          this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE);
+        this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE);
 
       this._context.texParameteri(this._context.TEXTURE_2D,
-          this._context.TEXTURE_MAG_FILTER, this._context.NEAREST);
+        this._context.TEXTURE_MAG_FILTER, this._context.NEAREST);
       this._context.texParameteri(this._context.TEXTURE_2D,
-          this._context.TEXTURE_MIN_FILTER, this._context.NEAREST);
+        this._context.TEXTURE_MIN_FILTER, this._context.NEAREST);
 
       this._context.bindFramebuffer(this._context.FRAMEBUFFER, pickFrameBuffer);
       this._context.bindRenderbuffer(this._context.RENDERBUFFER,
-          pickRenderBuffer);
+        pickRenderBuffer);
       this._context.renderbufferStorage(this._context.RENDERBUFFER,
-          this._context.DEPTH_COMPONENT16, this._width, this._height);
+        this._context.DEPTH_COMPONENT16, this._width, this._height);
       this._context.bindRenderbuffer(this._context.RENDERBUFFER, null);
 
       this._context.framebufferTexture2D(this._context.FRAMEBUFFER,
-          this._context.COLOR_ATTACHMENT0, this._context.TEXTURE_2D,
-          pickTexture, 0);
+        this._context.COLOR_ATTACHMENT0, this._context.TEXTURE_2D,
+        pickTexture, 0);
       this._context.framebufferRenderbuffer(this._context.FRAMEBUFFER,
-          this._context.DEPTH_ATTACHMENT, this._context.RENDERBUFFER,
-          pickRenderBuffer);
+        this._context.DEPTH_ATTACHMENT, this._context.RENDERBUFFER,
+        pickRenderBuffer);
       this._context.bindFramebuffer(this._context.FRAMEBUFFER, null);
 
       this._pickFrameBuffer = pickFrameBuffer;
@@ -412,12 +412,12 @@ X.renderer3D.prototype.init = function() {
  * @param {!X.shaders} shaders The X.shaders pair to add to this renderer.
  * @public
  */
-X.renderer3D.prototype.addShaders = function(shaders) {
+X.renderer3D.prototype.addShaders = function (shaders) {
 
   // check if the renderer is initialized properly
   if (!goog.isDefAndNotNull(this._canvas) ||
-      !goog.isDefAndNotNull(this._context) ||
-      !goog.isDefAndNotNull(this._camera)) {
+    !goog.isDefAndNotNull(this._context) ||
+    !goog.isDefAndNotNull(this._camera)) {
 
     throw new Error('Renderer was not initialized properly.');
 
@@ -436,7 +436,7 @@ X.renderer3D.prototype.addShaders = function(shaders) {
 
   // compile the fragment and vertex shaders
   var _glFragmentShader = this._context
-      .createShader(this._context.FRAGMENT_SHADER);
+    .createShader(this._context.FRAGMENT_SHADER);
   var _glVertexShader = this._context.createShader(this._context.VERTEX_SHADER);
 
   // attach the sources, defined in the shaders pair
@@ -448,18 +448,18 @@ X.renderer3D.prototype.addShaders = function(shaders) {
   this._context.compileShader(_glVertexShader);
 
   if (!this._context.getShaderParameter(_glFragmentShader,
-      this._context.COMPILE_STATUS)) {
+    this._context.COMPILE_STATUS)) {
 
     throw new Error('Fragement Shader compilation failed!\n' +
-        this._context.getShaderInfoLog(_glFragmentShader));
+      this._context.getShaderInfoLog(_glFragmentShader));
 
   }
 
   if (!this._context.getShaderParameter(_glVertexShader,
-      this._context.COMPILE_STATUS)) {
+    this._context.COMPILE_STATUS)) {
 
     throw new Error('Vertex Shader compilation failed!\n' +
-        this._context.getShaderInfoLog(_glVertexShader));
+      this._context.getShaderInfoLog(_glVertexShader));
 
   }
 
@@ -470,12 +470,12 @@ X.renderer3D.prototype.addShaders = function(shaders) {
   this._context.linkProgram(_shaderProgram);
 
   if (!this._context.getProgramParameter(_shaderProgram,
-      this._context.LINK_STATUS)) {
+    this._context.LINK_STATUS)) {
 
     throw new Error('Could not create shader program!\n' +
-        this._context.getShaderInfoLog(_glFragmentShader) + '\n' +
-        this._context.getShaderInfoLog(_glVertexShader) + '\n' +
-        this._context.getProgramInfoLog(_shaderProgram));
+      this._context.getShaderInfoLog(_glFragmentShader) + '\n' +
+      this._context.getShaderInfoLog(_glVertexShader) + '\n' +
+      this._context.getProgramInfoLog(_shaderProgram));
 
   }
 
@@ -488,11 +488,11 @@ X.renderer3D.prototype.addShaders = function(shaders) {
   // store the pointers to the shaders' attributes
   var _attributes = Object.keys(X.shaders.attributes);
 
-  _attributes.forEach(function(a) {
+  _attributes.forEach(function (a) {
 
     a = X.shaders.attributes[a];
     this._attributePointers.set(a, this._context.getAttribLocation(
-        this._shaderProgram, a));
+      this._shaderProgram, a));
     this._context.enableVertexAttribArray(this._attributePointers.get(a));
 
   }.bind(this));
@@ -500,11 +500,11 @@ X.renderer3D.prototype.addShaders = function(shaders) {
   // store the pointers to the shaders' uniforms
   var _uniforms = Object.keys(X.shaders.uniforms);
 
-  _uniforms.forEach(function(u) {
+  _uniforms.forEach(function (u) {
 
     u = X.shaders.uniforms[u];
     this._uniformLocations.set(u, this._context.getUniformLocation(
-        this._shaderProgram, u));
+      this._shaderProgram, u));
 
   }.bind(this));
 
@@ -517,7 +517,7 @@ X.renderer3D.prototype.addShaders = function(shaders) {
 /**
  * @inheritDoc
  */
-X.renderer3D.prototype.update_ = function(object) {
+X.renderer3D.prototype.update_ = function (object) {
 
   // call the update_ method of the superclass
   goog.base(this, 'update_', object);
@@ -525,7 +525,7 @@ X.renderer3D.prototype.update_ = function(object) {
   // check if object already existed..
   var existed = false;
 
-  if(!goog.isDefAndNotNull(object)){
+  if (!goog.isDefAndNotNull(object)) {
     return;
   }
   if (this.get(object._id)) {
@@ -550,7 +550,7 @@ X.renderer3D.prototype.update_ = function(object) {
   // LABEL MAP
   //
   if (goog.isDefAndNotNull(labelmap) && goog.isDefAndNotNull(labelmap._file) &&
-      labelmap._file._dirty) {
+    labelmap._file._dirty) {
     // a labelmap file is associated to this object and it is dirty..
     // background: we always want to parse label maps first
 
@@ -580,7 +580,7 @@ X.renderer3D.prototype.update_ = function(object) {
   // in these cases, we do not directly update the object but activate the
   // X.loader to get the externals and then let it call the update method
   if (goog.isDefAndNotNull(colortable) &&
-      goog.isDefAndNotNull(colortable._file) && colortable._file._dirty) {
+    goog.isDefAndNotNull(colortable._file) && colortable._file._dirty) {
     // a colortable file is associated to this object and it is dirty..
 
     // start loading
@@ -589,7 +589,7 @@ X.renderer3D.prototype.update_ = function(object) {
     return;
 
   } else if (goog.isDefAndNotNull(texture) &&
-      goog.isDefAndNotNull(texture._file) && texture._file._dirty) {
+    goog.isDefAndNotNull(texture._file) && texture._file._dirty) {
     // a texture file is associated to this object and it is dirty..
 
     // start loading..
@@ -639,7 +639,7 @@ X.renderer3D.prototype.update_ = function(object) {
     return;
 
   } else if (goog.isDefAndNotNull(scalars) &&
-      goog.isDefAndNotNull(scalars._file) && scalars._file._dirty) {
+    goog.isDefAndNotNull(scalars._file) && scalars._file._dirty) {
     // a scalars container is associated to this object and it's associated file
     // is dirty
 
@@ -660,15 +660,24 @@ X.renderer3D.prototype.update_ = function(object) {
 
     // loop through the children and recursively setup the object
     var children = object._children;
-    var numberOfChildren = children.length;
-    var c = 0;
-
-    for (c = 0; c < numberOfChildren; c++) {
-
-      this.update_(children[c]);
-
+    var childrenPresent = Object.keys(children);
+    var numberOfChildren = childrenPresent.length;
+    
+    for (var c = 0; c < numberOfChildren; c++) {
+      var child = children[childrenPresent[c]];
+      if (child instanceof X.slice) {
+        if (object._volume && object._volume._volumeRendering) {
+          for (; c < numberOfChildren; c++) {
+            this.update_(children[childrenPresent[c]]);
+          }
+        } else {
+          this.update_(children[object._currentIndex]);
+        }
+        break;
+      } else {
+        this.update_(child);
+      }
     }
-
   }
 
   // check if this is an empty object, if yes, jump out
@@ -769,46 +778,46 @@ X.renderer3D.prototype.update_ = function(object) {
       if (texture._rawData) {
 
         var _texture_type = this._context.RGBA;
-        
+
         if (texture._grayscale) {
-          
+
           // one channel texture
           _texture_type = this._context.LUMINANCE;
           this._context.pixelStorei(this._context.UNPACK_ALIGNMENT, 1);
-          
+
         }
 
         // use rawData rather than loading an imagefile
         this._context.texImage2D(this._context.TEXTURE_2D, 0,
-            _texture_type, texture._rawDataWidth, texture._rawDataHeight,
-            0, _texture_type, this._context.UNSIGNED_BYTE,
-            texture._rawData);
+          _texture_type, texture._rawDataWidth, texture._rawDataHeight,
+          0, _texture_type, this._context.UNSIGNED_BYTE,
+          texture._rawData);
 
       } else {
 
         // use an imageFile for the texture
         this._context.texImage2D(this._context.TEXTURE_2D, 0,
-            this._context.RGBA, this._context.RGBA,
-            this._context.UNSIGNED_BYTE, glTexture.image);
+          this._context.RGBA, this._context.RGBA,
+          this._context.UNSIGNED_BYTE, glTexture.image);
 
       }
 
       this._context.texParameteri(this._context.TEXTURE_2D,
-          this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE);
+        this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE);
       this._context.texParameteri(this._context.TEXTURE_2D,
-          this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE);
+        this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE);
 
       // for labelmaps, we use NEAREST NEIGHBOR filtering
       if (isLabelMap) {
         this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MAG_FILTER, this._context.NEAREST);
+          this._context.TEXTURE_MAG_FILTER, this._context.NEAREST);
         this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MIN_FILTER, this._context.NEAREST);
+          this._context.TEXTURE_MIN_FILTER, this._context.NEAREST);
       } else {
         this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MAG_FILTER, this._context.LINEAR);
+          this._context.TEXTURE_MAG_FILTER, this._context.LINEAR);
         this._context.texParameteri(this._context.TEXTURE_2D,
-            this._context.TEXTURE_MIN_FILTER, this._context.LINEAR);
+          this._context.TEXTURE_MIN_FILTER, this._context.LINEAR);
       }
 
       // release the texture binding to clear things
@@ -819,15 +828,15 @@ X.renderer3D.prototype.update_ = function(object) {
 
       // bind and fill with colors defined above
       this._context.bindBuffer(this._context.ARRAY_BUFFER,
-          glTexturePositionBuffer);
+        glTexturePositionBuffer);
       this._context.bufferData(this._context.ARRAY_BUFFER, new Float32Array(
-          textureCoordinateMap), this._context.STATIC_DRAW);
+        textureCoordinateMap), this._context.STATIC_DRAW);
 
       // create an X.buffer to store the texture-coordinate map
       texturePositionBuffer = new X.buffer(glTexturePositionBuffer,
-          textureCoordinateMap.length, 2);
+        textureCoordinateMap.length, 2);
 
-     this._texturePositionBuffers.set(id, texturePositionBuffer);
+      this._texturePositionBuffers.set(id, texturePositionBuffer);
 
       texture._dirty = false;
 
@@ -902,8 +911,8 @@ X.renderer3D.prototype.update_ = function(object) {
     }
     // we always keep track of the current center position
     this._center = [(this._minX + this._maxX) / 2,
-                    (this._minY + this._maxY) / 2,
-                    (this._minZ + this._maxZ) / 2];
+    (this._minY + this._maxY) / 2,
+    (this._minZ + this._maxZ) / 2];
 
     // only set the transform clean since we still need to look at the points
     transform._dirty = false;
@@ -950,7 +959,7 @@ X.renderer3D.prototype.update_ = function(object) {
     this._context.bindBuffer(this._context.ARRAY_BUFFER, glVertexBuffer);
 
     this._context.bufferData(this._context.ARRAY_BUFFER, points._triplets,
-        this._context.STATIC_DRAW);
+      this._context.STATIC_DRAW);
 
     // create an X.buffer to store the vertices
     // every vertex consists of 3 items (x,y,z)
@@ -1008,7 +1017,7 @@ X.renderer3D.prototype.update_ = function(object) {
 
     this._context.bindBuffer(this._context.ARRAY_BUFFER, glNormalBuffer);
     this._context.bufferData(this._context.ARRAY_BUFFER, normals._triplets,
-        this._context.STATIC_DRAW);
+      this._context.STATIC_DRAW);
 
     // create an X.buffer to store the normals
     // every normal consists of 3 items (x,y,z)
@@ -1082,7 +1091,7 @@ X.renderer3D.prototype.update_ = function(object) {
       colors.resize();
       this._context.bindBuffer(this._context.ARRAY_BUFFER, glColorBuffer);
       this._context.bufferData(this._context.ARRAY_BUFFER, colors._triplets,
-          this._context.STATIC_DRAW);
+        this._context.STATIC_DRAW);
 
       // create an X.buffer to store the colors
       // every color consists of 3 items (r,g,b)
@@ -1152,7 +1161,7 @@ X.renderer3D.prototype.update_ = function(object) {
       // bind and fill with colors defined above
       this._context.bindBuffer(this._context.ARRAY_BUFFER, glScalarBuffer);
       this._context.bufferData(this._context.ARRAY_BUFFER, scalarsArray,
-          this._context.STATIC_DRAW);
+        this._context.STATIC_DRAW);
 
       // create an X.buffer to store the colors
       // every scalar consists of 1 item
@@ -1211,7 +1220,7 @@ X.renderer3D.prototype.update_ = function(object) {
  * @param {number} x The x coordinate (viewport).
  * @param {number} y The y coordinate (viewport).
  */
-X.renderer3D.prototype.showCaption_ = function(x, y) {
+X.renderer3D.prototype.showCaption_ = function (x, y) {
 
   var pickedId = this.pick(x, y);
 
@@ -1223,10 +1232,10 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
 
     if (caption) {
 
-			var pos = goog.style.getClientPosition(this._container);
+      var pos = goog.style.getClientPosition(this._container);
 
       var t = new X.caption(this._container, pos.x + x +
-          10, pos.y + y + 10, this._interactor);
+        10, pos.y + y + 10, this._interactor);
       t.setHtml(caption);
 
     }
@@ -1243,18 +1252,18 @@ X.renderer3D.prototype.showCaption_ = function(x, y) {
  *
  * @param {X.volume} volume The X.volume to configure
  */
-X.renderer3D.prototype.orientVolume_ = function(volume) {
+X.renderer3D.prototype.orientVolume_ = function (volume) {
 
-  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]+volume._childrenInfo[0]._sliceNormal[0],volume._RASCenter[1]+ volume._childrenInfo[0]._sliceNormal[1], volume._RASCenter[2]+volume._childrenInfo[0]._sliceNormal[2]);
-  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,volume._RASCenter[0]-volume._childrenInfo[0]._sliceNormal[0], volume._RASCenter[1]-volume._childrenInfo[0]._sliceNormal[1], volume._RASCenter[2]-volume._childrenInfo[0]._sliceNormal[2]);
+  var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0] + volume._childrenInfo[0]._sliceNormal[0], volume._RASCenter[1] + volume._childrenInfo[0]._sliceNormal[1], volume._RASCenter[2] + volume._childrenInfo[0]._sliceNormal[2]);
+  var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0] - volume._childrenInfo[0]._sliceNormal[0], volume._RASCenter[1] - volume._childrenInfo[0]._sliceNormal[1], volume._RASCenter[2] - volume._childrenInfo[0]._sliceNormal[2]);
   var dX = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]+volume._childrenInfo[1]._sliceNormal[0], volume._RASCenter[1]+volume._childrenInfo[1]._sliceNormal[1], volume._RASCenter[2]+volume._childrenInfo[1]._sliceNormal[2]);
-  realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]-volume._childrenInfo[1]._sliceNormal[0], volume._RASCenter[1]-volume._childrenInfo[1]._sliceNormal[1], volume._RASCenter[2] +-volume._childrenInfo[1]._sliceNormal[2]);
+  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0] + volume._childrenInfo[1]._sliceNormal[0], volume._RASCenter[1] + volume._childrenInfo[1]._sliceNormal[1], volume._RASCenter[2] + volume._childrenInfo[1]._sliceNormal[2]);
+  realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0] - volume._childrenInfo[1]._sliceNormal[0], volume._RASCenter[1] - volume._childrenInfo[1]._sliceNormal[1], volume._RASCenter[2] + -volume._childrenInfo[1]._sliceNormal[2]);
   var dY = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
-  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]+volume._childrenInfo[2]._sliceNormal[0], volume._RASCenter[1]+volume._childrenInfo[2]._sliceNormal[1], volume._RASCenter[2]+volume._childrenInfo[2]._sliceNormal[2]);
-  realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0]-volume._childrenInfo[2]._sliceNormal[0], volume._RASCenter[1]-volume._childrenInfo[2]._sliceNormal[1], volume._RASCenter[2]-volume._childrenInfo[2]._sliceNormal[2]);
+  realCentroidVector = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0] + volume._childrenInfo[2]._sliceNormal[0], volume._RASCenter[1] + volume._childrenInfo[2]._sliceNormal[1], volume._RASCenter[2] + volume._childrenInfo[2]._sliceNormal[2]);
+  realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, volume._RASCenter[0] - volume._childrenInfo[2]._sliceNormal[0], volume._RASCenter[1] - volume._childrenInfo[2]._sliceNormal[1], volume._RASCenter[2] - volume._childrenInfo[2]._sliceNormal[2]);
   var dZ = Math.abs(realCentroidVector.z - realCentroidVector2.z);
 
   var maxDistance = Math.max(dX, dY, dZ);
@@ -1268,7 +1277,7 @@ X.renderer3D.prototype.orientVolume_ = function(volume) {
     volume.volumeRendering_(1);
 
   } else {
-    
+
     volume.volumeRendering_(2);
   }
 
@@ -1281,13 +1290,13 @@ X.renderer3D.prototype.orientVolume_ = function(volume) {
  * @param {!X.object} object The X.object to use for calculation.
  * @return {number} The distance to the eye.
  */
-X.renderer3D.prototype.distanceToEye_ = function(object) {
+X.renderer3D.prototype.distanceToEye_ = function (object) {
 
   var centroid = object._points._centroid;
   var transformedCentroidVector = X.matrix.multiplyByVector(object._transform._matrix, centroid[0], centroid[1], centroid[2]);
   var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, transformedCentroidVector.x, transformedCentroidVector.y, transformedCentroidVector.z);
   var distanceFromEye = X.vector.distance(this._camera._position,
-      realCentroidVector);
+    realCentroidVector);
 
   return Math.round(distanceFromEye * 1000) / 1000;
 
@@ -1299,7 +1308,7 @@ X.renderer3D.prototype.distanceToEye_ = function(object) {
  * accordingly from back-to-front while fully opaque objects are drawn first.
  * Jumps out as early as possible if all objects are fully opaque.
  */
-X.renderer3D.prototype.order_ = function() {
+X.renderer3D.prototype.order_ = function () {
 
   // by default we do not want to update the rendering order
   var reSortRequired = false;
@@ -1317,48 +1326,48 @@ X.renderer3D.prototype.order_ = function() {
     // b) check if first or last slice is the closest an order slices accordingly
     if (object instanceof X.volume && object._volumeRendering && object._volumeRenderingDirection != -1) {
 
-        var _slices = object._children[object._volumeRenderingDirection]._children;
-        var numberOfSlices = _slices.length;
+      var _slices = object._children[object._volumeRenderingDirection]._children;
+      var numberOfSlices = _slices.length;
 
-        // grab the first slice, attach the distance and opacity
-        var firstSlice = _slices[0];
+      // grab the first slice, attach the distance and opacity
+      var firstSlice = _slices[0];
 
-        var _targetChild = object._volumeRenderingDirection;
-        var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, object._RASCenter[0]+object._childrenInfo[_targetChild]._sliceDirection[0], object._RASCenter[1]+object._childrenInfo[_targetChild]._sliceDirection[1], object._RASCenter[2]+object._childrenInfo[_targetChild]._sliceDirection[2]);
-        var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view,object._RASCenter[0]-object._childrenInfo[_targetChild]._sliceDirection[0], object._RASCenter[1]-object._childrenInfo[_targetChild]._sliceDirection[1], object._RASCenter[2]-object._childrenInfo[_targetChild]._sliceDirection[2]);
-        var dX = realCentroidVector.z - realCentroidVector2.z;
+      var _targetChild = object._volumeRenderingDirection;
+      var realCentroidVector = X.matrix.multiplyByVector(this._camera._view, object._RASCenter[0] + object._childrenInfo[_targetChild]._sliceDirection[0], object._RASCenter[1] + object._childrenInfo[_targetChild]._sliceDirection[1], object._RASCenter[2] + object._childrenInfo[_targetChild]._sliceDirection[2]);
+      var realCentroidVector2 = X.matrix.multiplyByVector(this._camera._view, object._RASCenter[0] - object._childrenInfo[_targetChild]._sliceDirection[0], object._RASCenter[1] - object._childrenInfo[_targetChild]._sliceDirection[1], object._RASCenter[2] - object._childrenInfo[_targetChild]._sliceDirection[2]);
+      var dX = realCentroidVector.z - realCentroidVector2.z;
 
-         var _acquisitionDirection = Math.max(object._IJKToRAS[object._volumeRenderingDirection], Math.max(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
-         var _acquisitionDirection2 = Math.min(object._IJKToRAS[object._volumeRenderingDirection], Math.min(object._IJKToRAS[object._volumeRenderingDirection+4], object._IJKToRAS[object._volumeRenderingDirection+8])); 
-         var _acquisitionSign = _acquisitionDirection + _acquisitionDirection2;
+      var _acquisitionDirection = Math.max(object._IJKToRAS[object._volumeRenderingDirection], Math.max(object._IJKToRAS[object._volumeRenderingDirection + 4], object._IJKToRAS[object._volumeRenderingDirection + 8]));
+      var _acquisitionDirection2 = Math.min(object._IJKToRAS[object._volumeRenderingDirection], Math.min(object._IJKToRAS[object._volumeRenderingDirection + 4], object._IJKToRAS[object._volumeRenderingDirection + 8]));
+      var _acquisitionSign = _acquisitionDirection + _acquisitionDirection2;
 
-        if(dX*_acquisitionSign < 0) {
+      if (dX * _acquisitionSign < 0) {
 
-          var s = 0;
-          for (s = 0; s < object._range[_targetChild] - 1; s++) {
+        var s = 0;
+        for (s = 0; s < object._range[_targetChild] - 1; s++) {
 
-            if (!_slices[s]) continue;
+          if (!_slices[s]) continue;
 
-            _slices[s]._opacity = object._opacity;
-            _slices[s]._distance =   object._childrenInfo[_targetChild]._sliceSpacing*s;
+          _slices[s]._opacity = object._opacity;
+          _slices[s]._distance = object._childrenInfo[_targetChild]._sliceSpacing * s;
 
-          }
         }
-        else {
+      }
+      else {
 
-         var s = object._range[_targetChild] - 1;
-         for (s = object._range[_targetChild] - 1; s >= 0; s--) {
+        var s = object._range[_targetChild] - 1;
+        for (s = object._range[_targetChild] - 1; s >= 0; s--) {
 
-            if (!_slices[s]) continue;
+          if (!_slices[s]) continue;
 
-            _slices[s]._opacity = object._opacity;
-            _slices[s]._distance =   (object._range[_targetChild]-1)*object._childrenInfo[_targetChild]._sliceSpacing -object._childrenInfo[_targetChild]._sliceSpacing*s;
+          _slices[s]._opacity = object._opacity;
+          _slices[s]._distance = (object._range[_targetChild] - 1) * object._childrenInfo[_targetChild]._sliceSpacing - object._childrenInfo[_targetChild]._sliceSpacing * s;
 
-          }
         }
+      }
 
-        // we need to update the rendering order
-        reSortRequired = true;
+      // we need to update the rendering order
+      reSortRequired = true;
 
     }
 
@@ -1416,7 +1425,7 @@ X.renderer3D.prototype.order_ = function() {
  * @param {!number} y The Y-value of the display coordinates.
  * @return {number} The ID of the found X.object or -1 if no X.object was found.
  */
-X.renderer3D.prototype.pick = function(x, y) {
+X.renderer3D.prototype.pick = function (x, y) {
 
   if (this._config['PICKING_ENABLED']) {
 
@@ -1427,7 +1436,7 @@ X.renderer3D.prototype.pick = function(x, y) {
     // grab the content of the framebuffer
     var data = new Uint8Array(4);
     this._context.readPixels(x, this._height - y, 1, 1, this._context.RGBA,
-        this._context.UNSIGNED_BYTE, data);
+      this._context.UNSIGNED_BYTE, data);
 
     // grab the id
     var r = data[0];
@@ -1448,7 +1457,7 @@ X.renderer3D.prototype.pick = function(x, y) {
 /**
  * @inheritDoc
  */
-X.renderer3D.prototype.render_ = function(picking, invoked) {
+X.renderer3D.prototype.render_ = function (picking, invoked) {
 
   // call the render_ method of the superclass
   goog.base(this, 'render_', picking, invoked);
@@ -1456,7 +1465,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   // clear the canvas
   this._context.viewport(0, 0, this._width, this._height);
   this._context.clear(this._context.COLOR_BUFFER_BIT |
-      this._context.DEPTH_BUFFER_BIT);
+    this._context.DEPTH_BUFFER_BIT);
 
   // only proceed if there are actually objects to render
   var _objects = this._objects.values();
@@ -1471,7 +1480,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
     // we are in picking mode, so use the framebuffer rather than the canvas
     this._context.bindFramebuffer(this._context.FRAMEBUFFER,
-        this._pickFrameBuffer);
+      this._pickFrameBuffer);
 
   } else {
 
@@ -1489,17 +1498,17 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   // propagate perspective and view matrices to the uniforms of
   // the shader
   this._context.uniformMatrix4fv(this._uniformLocations
-      .get(X.shaders.uniforms.PERSPECTIVE), false, perspectiveMatrix);
+    .get(X.shaders.uniforms.PERSPECTIVE), false, perspectiveMatrix);
 
   this._context.uniformMatrix4fv(this._uniformLocations
-      .get(X.shaders.uniforms.VIEW), false, viewMatrix);
+    .get(X.shaders.uniforms.VIEW), false, viewMatrix);
 
   // propagate the objects' center to the shader
   //
   var center = this._center;
   this._context.uniform3f(
-      this._uniformLocations.get(X.shaders.uniforms.CENTER),
-      parseFloat(center[0]), parseFloat(center[1]), parseFloat(center[2]));
+    this._uniformLocations.get(X.shaders.uniforms.CENTER),
+    parseFloat(center[0]), parseFloat(center[1]), parseFloat(center[2]));
 
   //
   // orient volumes for proper volume rendering - if there are any,
@@ -1551,36 +1560,36 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   var uObjectColor = uLocations.get(X.shaders.uniforms.OBJECTCOLOR);
   var uUseScalars = uLocations.get(X.shaders.uniforms.USESCALARS);
   var uScalarsReplaceMode = uLocations
-      .get(X.shaders.uniforms.SCALARSREPLACEMODE);
+    .get(X.shaders.uniforms.SCALARSREPLACEMODE);
   var uScalarsMin = uLocations.get(X.shaders.uniforms.SCALARSMIN);
   var uScalarsMax = uLocations.get(X.shaders.uniforms.SCALARSMAX);
   var uScalarsMinColor = uLocations.get(X.shaders.uniforms.SCALARSMINCOLOR);
   var uScalarsMaxColor = uLocations.get(X.shaders.uniforms.SCALARSMAXCOLOR);
   var uScalarsInterpolation = uLocations.get(X.shaders.uniforms.SCALARSINTERPOLATION);
   var uScalarsMinThreshold = uLocations
-      .get(X.shaders.uniforms.SCALARSMINTHRESHOLD);
+    .get(X.shaders.uniforms.SCALARSMINTHRESHOLD);
   var uScalarsMaxThreshold = uLocations
-      .get(X.shaders.uniforms.SCALARSMAXTHRESHOLD);
+    .get(X.shaders.uniforms.SCALARSMAXTHRESHOLD);
   var uObjectOpacity = uLocations.get(X.shaders.uniforms.OBJECTOPACITY);
   var uLabelMapOpacity = uLocations.get(X.shaders.uniforms.LABELMAPOPACITY);
   var uLabelMapColor = uLocations.get(X.shaders.uniforms.LABELMAPCOLOR);
   var uUseTexture = uLocations.get(X.shaders.uniforms.USETEXTURE);
   var uUseLabelMapTexture = uLocations
-      .get(X.shaders.uniforms.USELABELMAPTEXTURE);
+    .get(X.shaders.uniforms.USELABELMAPTEXTURE);
   var uTextureSampler = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER);
   var uTextureSampler2 = uLocations.get(X.shaders.uniforms.TEXTURESAMPLER2);
   var uVolumeLowerThreshold = uLocations
-      .get(X.shaders.uniforms.VOLUMELOWERTHRESHOLD);
+    .get(X.shaders.uniforms.VOLUMELOWERTHRESHOLD);
   var uVolumeUpperThreshold = uLocations
-      .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD);
+    .get(X.shaders.uniforms.VOLUMEUPPERTHRESHOLD);
   var uVolumeScalarMin = uLocations.get(X.shaders.uniforms.VOLUMESCALARMIN);
   var uVolumeScalarMax = uLocations.get(X.shaders.uniforms.VOLUMESCALARMAX);
   var uVolumeWindowLow = uLocations.get(X.shaders.uniforms.VOLUMEWINDOWLOW);
   var uVolumeWindowHigh = uLocations.get(X.shaders.uniforms.VOLUMEWINDOWHIGH);
   var uVolumeScalarMinColor = uLocations
-      .get(X.shaders.uniforms.VOLUMESCALARMINCOLOR);
+    .get(X.shaders.uniforms.VOLUMESCALARMINCOLOR);
   var uVolumeScalarMaxColor = uLocations
-      .get(X.shaders.uniforms.VOLUMESCALARMAXCOLOR);
+    .get(X.shaders.uniforms.VOLUMESCALARMAXCOLOR);
   var uVolumeTexture = uLocations.get(X.shaders.uniforms.VOLUMETEXTURE);
   var uObjectTransform = uLocations.get(X.shaders.uniforms.OBJECTTRANSFORM);
   var uPointSize = uLocations.get(X.shaders.uniforms.POINTSIZE);
@@ -1636,17 +1645,17 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
       // VERTICES
       this._context.bindBuffer(this._context.ARRAY_BUFFER,
-          vertexBuffer._glBuffer);
+        vertexBuffer._glBuffer);
 
       this._context.vertexAttribPointer(aPosition, vertexBuffer._itemSize,
-          this._context.FLOAT, false, 0, 0);
+        this._context.FLOAT, false, 0, 0);
 
       // NORMALS
       this._context.bindBuffer(this._context.ARRAY_BUFFER,
-          normalBuffer._glBuffer);
+        normalBuffer._glBuffer);
 
       this._context.vertexAttribPointer(aNormal, normalBuffer._itemSize,
-          this._context.FLOAT, false, 0, 0);
+        this._context.FLOAT, false, 0, 0);
 
       if (picking) {
 
@@ -1670,10 +1679,10 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         this._context.uniform1i(uUseObjectColor, false);
 
         this._context.bindBuffer(this._context.ARRAY_BUFFER,
-            colorBuffer._glBuffer);
+          colorBuffer._glBuffer);
 
         this._context.vertexAttribPointer(aColor, colorBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
+          this._context.FLOAT, false, 0, 0);
 
       } else {
 
@@ -1706,12 +1715,12 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         }
 
         this._context.uniform3f(uObjectColor, parseFloat(objectColor[0]),
-            parseFloat(objectColor[1]), parseFloat(objectColor[2]));
+          parseFloat(objectColor[1]), parseFloat(objectColor[2]));
 
         // we always have to configure the attribute of the point colors
         // even if no point colors are in use
         this._context.vertexAttribPointer(aColor, vertexBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
+          this._context.FLOAT, false, 0, 0);
 
       }
 
@@ -1726,22 +1735,22 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
         // propagate the replace flag
         this._context.uniform1i(uScalarsReplaceMode,
-            object._scalars._replaceMode);
+          object._scalars._replaceMode);
 
         var minColor = object._scalars._minColor;
         var maxColor = object._scalars._maxColor;
 
         // propagate minColors and maxColors for the scalars
         this._context.uniform3f(uScalarsMinColor, parseFloat(minColor[0]),
-            parseFloat(minColor[1]), parseFloat(minColor[2]));
+          parseFloat(minColor[1]), parseFloat(minColor[2]));
         this._context.uniform3f(uScalarsMaxColor, parseFloat(maxColor[0]),
-            parseFloat(maxColor[1]), parseFloat(maxColor[2]));
+          parseFloat(maxColor[1]), parseFloat(maxColor[2]));
 
         // propagate minThreshold and maxThreshold for the scalars
         this._context.uniform1f(uScalarsMinThreshold,
-            parseFloat(object._scalars._lowerThreshold));
+          parseFloat(object._scalars._lowerThreshold));
         this._context.uniform1f(uScalarsMaxThreshold,
-            parseFloat(object._scalars._upperThreshold));
+          parseFloat(object._scalars._upperThreshold));
 
         // propagate min and max for the scalars
         this._context.uniform1f(uScalarsMin, parseFloat(object._scalars._min));
@@ -1751,10 +1760,10 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         this._context.uniform1i(uScalarsInterpolation, parseInt(object._scalars._interpolation, 10));
 
         this._context.bindBuffer(this._context.ARRAY_BUFFER,
-            scalarBuffer._glBuffer);
+          scalarBuffer._glBuffer);
 
         this._context.vertexAttribPointer(aScalar, scalarBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
+          this._context.FLOAT, false, 0, 0);
 
       } else {
 
@@ -1764,7 +1773,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         // we always have to configure the attribute of the scalars
         // even if no scalars are in use
         this._context.vertexAttribPointer(aScalar, vertexBuffer._itemSize,
-            this._context.FLOAT, false, 0, 0);
+          this._context.FLOAT, false, 0, 0);
 
       }
 
@@ -1788,15 +1797,15 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         // grab the texture from the internal hash map using the id as the
         // key
         this._context.bindTexture(this._context.TEXTURE_2D, this._textures
-            .get(object._texture._id));
+          .get(object._texture._id));
         this._context.uniform1i(uTextureSampler, 0);
 
         // propagate the current texture-coordinate-map to WebGL
         this._context.bindBuffer(this._context.ARRAY_BUFFER,
-            texturePositionBuffer._glBuffer);
+          texturePositionBuffer._glBuffer);
 
         this._context.vertexAttribPointer(aTexturePosition,
-            texturePositionBuffer._itemSize, this._context.FLOAT, false, 0, 0);
+          texturePositionBuffer._itemSize, this._context.FLOAT, false, 0, 0);
 
         // by default, no X.volume texture
         this._context.uniform1i(uVolumeTexture, false);
@@ -1809,7 +1818,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         // we always have to configure the attribute of the texture positions
         // even if no textures are in use
         this._context.vertexAttribPointer(aTexturePosition,
-            vertexBuffer._itemSize, this._context.FLOAT, false, 0, 0);
+          vertexBuffer._itemSize, this._context.FLOAT, false, 0, 0);
 
       }
 
@@ -1835,9 +1844,9 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
         var minColor = volume._minColor;
         var maxColor = volume._maxColor;
         this._context.uniform3f(uVolumeScalarMinColor, parseFloat(minColor[0]),
-            parseFloat(minColor[1]), parseFloat(minColor[2]));
+          parseFloat(minColor[1]), parseFloat(minColor[2]));
         this._context.uniform3f(uVolumeScalarMaxColor, parseFloat(maxColor[0]),
-            parseFloat(maxColor[1]), parseFloat(maxColor[2]));
+          parseFloat(maxColor[1]), parseFloat(maxColor[2]));
 
         // pass the w/l
         this._context.uniform1f(uVolumeWindowLow, volume._windowLow);
@@ -1856,7 +1865,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 
         } else if (labelmap && labelmap._visible) {
           // only if we have an associated labelmap..
-          
+
           // grab the id of the labelmap
           var labelmapTextureID = object._labelmap._id;
 
@@ -1869,7 +1878,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
           // grab the texture from the internal hash map using the id as
           // the key
           this._context.bindTexture(this._context.TEXTURE_2D, this._textures
-              .get(labelmapTextureID));
+            .get(labelmapTextureID));
           this._context.uniform1i(uTextureSampler2, 1);
 
           // propagate label map opacity
@@ -1885,7 +1894,7 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
       // TRANSFORMS
       // propagate transform to the uniform matrices of the shader
       this._context.uniformMatrix4fv(uObjectTransform, false,
-          object._transform._matrix);
+        object._transform._matrix);
 
       // POINT SIZE
       var pointSize = 1;
@@ -1980,26 +1989,26 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
 /**
  * @inheritDoc
  */
-X.renderer3D.prototype.remove = function(object) {
+X.renderer3D.prototype.remove = function (object) {
 
-	// call the remove_ method of the superclass
-	goog.base(this, 'remove', object);
+  // call the remove_ method of the superclass
+  goog.base(this, 'remove', object);
 
-	// check if this object has children
-	if (object._children.length > 0) {
+  // check if this object has children
+  if (object._children.length > 0) {
 
-		// loop through the children and recursively remove the objects
-		var children = object._children;
-		var numberOfChildren = children.length;
-		var c = 0;
+    // loop through the children and recursively remove the objects
+    var children = object._children;
+    var numberOfChildren = children.length;
+    var c = 0;
 
-		for (c = 0; c < numberOfChildren; c++) {
-      if (typeof(children[c]) != "undefined"){
-			  this.remove(children[c]);
+    for (c = 0; c < numberOfChildren; c++) {
+      if (typeof (children[c]) != "undefined") {
+        this.remove(children[c]);
       }
-		}
+    }
 
-	}
+  }
 
   var id = object._id;
 
@@ -2007,7 +2016,7 @@ X.renderer3D.prototype.remove = function(object) {
   var oldTexturePositionBuffer = this._texturePositionBuffers.get(id);
   if (goog.isDefAndNotNull(oldTexturePositionBuffer)) {
     if (this._context.isBuffer(oldTexturePositionBuffer._glBuffer)) {
-  
+
       this._context.deleteBuffer(oldTexturePositionBuffer._glBuffer);
 
     }
@@ -2015,7 +2024,7 @@ X.renderer3D.prototype.remove = function(object) {
   }
 
   if (object._texture) {
-    
+
     var _texture = this._textures.get(object._texture._id);
 
     if (_texture) {
@@ -2089,7 +2098,7 @@ X.renderer3D.prototype.remove = function(object) {
 /**
  * @inheritDoc
  */
-X.renderer3D.prototype.destroy = function() {
+X.renderer3D.prototype.destroy = function () {
 
   // remove all shaders
   this._shaders = null;
@@ -2097,7 +2106,7 @@ X.renderer3D.prototype.destroy = function() {
 
   // remove the gl context
   this._context.clear(this._context.COLOR_BUFFER_BIT |
-      this._context.DEPTH_BUFFER_BIT);
+    this._context.DEPTH_BUFFER_BIT);
 
   // call the destroy method of the superclass
   goog.base(this, 'destroy');
@@ -2110,8 +2119,8 @@ X.renderer3D.prototype.destroy = function() {
  * @return {!Array} The background color normalized.
  * @public
  */
-X.renderer3D.prototype.__defineGetter__('bgColor', function() {
-  
+X.renderer3D.prototype.__defineGetter__('bgColor', function () {
+
   return this._bgColor;
 
 });
@@ -2123,7 +2132,7 @@ X.renderer3D.prototype.__defineGetter__('bgColor', function() {
  *          bgColor The background color normalized.
  * @public
  */
-X.renderer3D.prototype.__defineSetter__('bgColor', function(bgColor) {
+X.renderer3D.prototype.__defineSetter__('bgColor', function (bgColor) {
 
   this._bgColor = bgColor;
 
@@ -2138,38 +2147,38 @@ X.renderer3D.prototype.__defineSetter__('bgColor', function(bgColor) {
  * @return {!Array} An array with collections of in and out intersections.
  * @protected
  */
-X.renderer3D.prototype.ray_intersect_box_ = function(box, ray_start, ray_direction) {
+X.renderer3D.prototype.ray_intersect_box_ = function (box, ray_start, ray_direction) {
 
 
   var _solutionsIn = new Array();
   var _solutionsOut = new Array();
-  
+
   // xmin, xmax, ymin, ymax, zmin, zmax
-  for(var _i = 0; _i < 6; _i++) {
+  for (var _i = 0; _i < 6; _i++) {
 
-    var _i2 = Math.floor(_i/2);
-    var _i3 = (_i2 + 1)%3;
-    var _i4 = (_i2 + 2)%3;
-    var _j1 = (2 + (2*_i2))%6;
-    var _j2 = (4 + (2*_i2))%6;
+    var _i2 = Math.floor(_i / 2);
+    var _i3 = (_i2 + 1) % 3;
+    var _i4 = (_i2 + 2) % 3;
+    var _j1 = (2 + (2 * _i2)) % 6;
+    var _j2 = (4 + (2 * _i2)) % 6;
     var _dir = _i2;
-    
-    
-    var _sol0 = box[_i];
-    var _invN1 = 1/ray_direction[_i2];
-    
-    var _t = (_sol0 - ray_start[_i2])*_invN1;
-    
-    // if _t infinity, we are //
-    if(_t != Infinity && _t != -Infinity) {
 
-      var _sol1 = ray_start[_i3] + ray_direction[_i3]*_t;
-      var _sol2 = ray_start[_i4] + ray_direction[_i4]*_t;
-        
+
+    var _sol0 = box[_i];
+    var _invN1 = 1 / ray_direction[_i2];
+
+    var _t = (_sol0 - ray_start[_i2]) * _invN1;
+
+    // if _t infinity, we are //
+    if (_t != Infinity && _t != -Infinity) {
+
+      var _sol1 = ray_start[_i3] + ray_direction[_i3] * _t;
+      var _sol2 = ray_start[_i4] + ray_direction[_i4] * _t;
+
       // in range?
-      if( (_sol1 >= box[_j1] && _sol1 <= box[_j1+1]) &&
-          (_sol2 >= box[_j2] && _sol2 <= box[_j2+1])) {
-        
+      if ((_sol1 >= box[_j1] && _sol1 <= box[_j1 + 1]) &&
+        (_sol2 >= box[_j2] && _sol2 <= box[_j2 + 1])) {
+
         var _sol = new Array();
         _sol[_i2] = box[_i];
         _sol[_i3] = _sol1;
@@ -2184,13 +2193,13 @@ X.renderer3D.prototype.ray_intersect_box_ = function(box, ray_start, ray_directi
         _sol[_i2] = box[_i];
         _sol[_i3] = _sol1;
         _sol[_i4] = _sol2;
-        
+
         _solutionsOut.push(_sol);
 
       }
     }
   }
-  
+
   return [_solutionsIn, _solutionsOut];
 
 };
@@ -2206,7 +2215,7 @@ X.renderer3D.prototype.ray_intersect_box_ = function(box, ray_start, ray_directi
  * @return {?Array} The closest 3D point of a valid object after ray casting. If NULL, than delta and epsilon should be tuned.
  * @public
  */
-X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
+X.renderer3D.prototype.pick3d = function (x, y, delta, epsilon, object) {
 
   // default values for delta and epsilon 
   // to determine the picking accuracy with a speed tradeoff
@@ -2222,13 +2231,13 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
   if (!goog.isDefAndNotNull(object)) {
 
     // grab the object under the cursor
-    var id = this.pick(x,y);
+    var id = this.pick(x, y);
     if (id == -1) {
       // quickly exit if there is no object
       return null;
     }
 
-    
+
     object = this.get(id);
     if (!object) {
       return null;
@@ -2239,8 +2248,8 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
   // we know now that the object has been hit
   // the question is: where exactly?
 
-  var ray_near = this._camera.unproject_(x/this._width*2.0-1.0, ((this._height-y)/this._height)*2.0-1.0, 0.0);
-  var ray_far = this._camera.unproject_(x/this._width*2.0-1.0, ((this._height-y)/this._height)*2.0-1.0, 1.0);
+  var ray_near = this._camera.unproject_(x / this._width * 2.0 - 1.0, ((this._height - y) / this._height) * 2.0 - 1.0, 0.0);
+  var ray_far = this._camera.unproject_(x / this._width * 2.0 - 1.0, ((this._height - y) / this._height) * 2.0 - 1.0, 1.0);
 
   // add center to both
   ray_near[0] += this._center[0];
@@ -2270,13 +2279,13 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
   var H = [object._points._maxA, object._points._minB, object._points._maxC];
   // transform all box coordinates
   var transformed_points = [X.matrix.multiplyByVector(object._transform._matrix, A[0], A[1], A[2]),
-    X.matrix.multiplyByVector(object._transform._matrix, B[0], B[1], B[2]),
-    X.matrix.multiplyByVector(object._transform._matrix, C[0], C[1], C[2]),
-    X.matrix.multiplyByVector(object._transform._matrix, D[0], D[1], D[2]),
-    X.matrix.multiplyByVector(object._transform._matrix, E[0], E[1], E[2]),
-    X.matrix.multiplyByVector(object._transform._matrix, F[0], F[1], F[2]),
-    X.matrix.multiplyByVector(object._transform._matrix, G[0], G[1], G[2]),
-    X.matrix.multiplyByVector(object._transform._matrix, H[0], H[1], H[2])];
+  X.matrix.multiplyByVector(object._transform._matrix, B[0], B[1], B[2]),
+  X.matrix.multiplyByVector(object._transform._matrix, C[0], C[1], C[2]),
+  X.matrix.multiplyByVector(object._transform._matrix, D[0], D[1], D[2]),
+  X.matrix.multiplyByVector(object._transform._matrix, E[0], E[1], E[2]),
+  X.matrix.multiplyByVector(object._transform._matrix, F[0], F[1], F[2]),
+  X.matrix.multiplyByVector(object._transform._matrix, G[0], G[1], G[2]),
+  X.matrix.multiplyByVector(object._transform._matrix, H[0], H[1], H[2])];
 
   // now create a bigger bounding box around the maybe rotated box
   // by finding x_min, x_max, y_min, y_max, z_min, z_max
@@ -2285,12 +2294,12 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
 
     t = transformed_points[t];
 
-    extremes = [Math.min(extremes[0], t.x), 
-                Math.max(extremes[1], t.x), 
-                Math.min(extremes[2], t.y), 
-                Math.max(extremes[3], t.y), 
-                Math.min(extremes[4], t.z), 
-                Math.max(extremes[5], t.z)];
+    extremes = [Math.min(extremes[0], t.x),
+    Math.max(extremes[1], t.x),
+    Math.min(extremes[2], t.y),
+    Math.max(extremes[3], t.y),
+    Math.min(extremes[4], t.z),
+    Math.max(extremes[5], t.z)];
 
   }
 
@@ -2318,9 +2327,9 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
   }
 
   var distances = new Array(2);
-  for (var i=0; i<2; i++) {
+  for (var i = 0; i < 2; i++) {
     var p = box_intersections[i];
-    distances[i] = Math.sqrt((p[0]-ray_near[0])*(p[0]-ray_near[0])+(p[1]-ray_near[1])*(p[1]-ray_near[1])+(p[2]-ray_near[2])*(p[2]-ray_near[2]));
+    distances[i] = Math.sqrt((p[0] - ray_near[0]) * (p[0] - ray_near[0]) + (p[1] - ray_near[1]) * (p[1] - ray_near[1]) + (p[2] - ray_near[2]) * (p[2] - ray_near[2]));
   }
 
   // now we need to sample the space between the two points
@@ -2336,13 +2345,13 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
     sample_end = box_intersections[0];
   }
 
-  sample_space = Math.sqrt((sample_start[0]-sample_end[0])*(sample_start[0]-sample_end[0])+(sample_start[1]-sample_end[1])*(sample_start[1]-sample_end[1])+(sample_start[2]-sample_end[2])*(sample_start[2]-sample_end[2]));
+  sample_space = Math.sqrt((sample_start[0] - sample_end[0]) * (sample_start[0] - sample_end[0]) + (sample_start[1] - sample_end[1]) * (sample_start[1] - sample_end[1]) + (sample_start[2] - sample_end[2]) * (sample_start[2] - sample_end[2]));
 
-  var sample_count = sample_space/delta;
+  var sample_count = sample_space / delta;
   var s_p = sample_start;
-  var sample_direction = [sample_end[0]-sample_start[0],sample_end[1]-sample_start[1],sample_end[2]-sample_start[2]];
-  var sample_direction_length = Math.sqrt(sample_direction[0]*sample_direction[0]+sample_direction[1]*sample_direction[1]+sample_direction[2]*sample_direction[2]);
-  var sample_unit_v = [sample_direction[0]/sample_direction_length, sample_direction[1]/sample_direction_length, sample_direction[2]/sample_direction_length];
+  var sample_direction = [sample_end[0] - sample_start[0], sample_end[1] - sample_start[1], sample_end[2] - sample_start[2]];
+  var sample_direction_length = Math.sqrt(sample_direction[0] * sample_direction[0] + sample_direction[1] * sample_direction[1] + sample_direction[2] * sample_direction[2]);
+  var sample_unit_v = [sample_direction[0] / sample_direction_length, sample_direction[1] / sample_direction_length, sample_direction[2] / sample_direction_length];
 
   var points = object._points._triplets;
   var points_count = points.length;
@@ -2356,27 +2365,27 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
   //X.matrix.invert(object.transform.matrix, m_i);
 
   // sample
-  for (var i=0; i<sample_count; i+=delta) {
+  for (var i = 0; i < sample_count; i += delta) {
 
     // the marching point
     // 
-    s_p = [s_p[0] + delta*sample_unit_v[0], s_p[1] + delta*sample_unit_v[1], s_p[2] + delta*sample_unit_v[2]];
+    s_p = [s_p[0] + delta * sample_unit_v[0], s_p[1] + delta * sample_unit_v[1], s_p[2] + delta * sample_unit_v[2]];
 
     // multiply s_p with the inverse transformation matrix
     // s_p = X.matrix.multiplyByVector(m_i, s_p);
     // s_p = [s_p.x, s_p.y, s_p.z];
 
     // find the closest point
-    for (var p=0; p<points_count; p+=3) {
+    for (var p = 0; p < points_count; p += 3) {
 
       var c_p_x = points[p];
-      var c_p_y = points[p+1];
-      var c_p_z = points[p+2];
+      var c_p_y = points[p + 1];
+      var c_p_z = points[p + 2];
       var c_p = new X.vector(c_p_x, c_p_y, c_p_z);
       c_p = X.matrix.multiplyByVector(object._transform._matrix, c_p_x, c_p_y, c_p_z);
 
       // calculate distance to the marching point
-      var d = Math.sqrt((s_p[0]-c_p.x)*(s_p[0]-c_p.x)+(s_p[1]-c_p.y)*(s_p[1]-c_p.y)+(s_p[2]-c_p.z)*(s_p[2]-c_p.z));
+      var d = Math.sqrt((s_p[0] - c_p.x) * (s_p[0] - c_p.x) + (s_p[1] - c_p.y) * (s_p[1] - c_p.y) + (s_p[2] - c_p.z) * (s_p[2] - c_p.z));
 
       if (d <= epsilon) {
 
@@ -2399,20 +2408,20 @@ goog.exportSymbol('X.renderer3D', X.renderer3D);
 goog.exportSymbol('X.renderer3D.prototype.init', X.renderer3D.prototype.init);
 goog.exportSymbol('X.renderer3D.prototype.add', X.renderer3D.prototype.add);
 goog.exportSymbol('X.renderer3D.prototype.onShowtime',
-    X.renderer3D.prototype.onShowtime);
+  X.renderer3D.prototype.onShowtime);
 goog.exportSymbol('X.renderer3D.prototype.onRender',
-    X.renderer3D.prototype.onRender);
+  X.renderer3D.prototype.onRender);
 goog.exportSymbol('X.renderer3D.prototype.get', X.renderer3D.prototype.get);
 goog.exportSymbol('X.renderer3D.prototype.render',
-    X.renderer3D.prototype.render);
+  X.renderer3D.prototype.render);
 goog.exportSymbol('X.renderer3D.prototype.destroy',
-    X.renderer3D.prototype.destroy);
+  X.renderer3D.prototype.destroy);
 goog.exportSymbol('X.renderer3D.prototype.remove',
-    X.renderer3D.prototype.remove);
+  X.renderer3D.prototype.remove);
 goog.exportSymbol('X.renderer3D.prototype.resetBoundingBox',
-    X.renderer3D.prototype.resetBoundingBox);
+  X.renderer3D.prototype.resetBoundingBox);
 goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
-    X.renderer3D.prototype.resetViewAndRender);
+  X.renderer3D.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer3D.prototype.pick', X.renderer3D.prototype.pick);
 goog.exportSymbol('X.renderer3D.prototype.pick3d', X.renderer3D.prototype.pick3d);
 goog.exportSymbol('X.renderer3D.prototype.afterRender', X.renderer3D.prototype.afterRender);

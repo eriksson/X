@@ -44,7 +44,7 @@ class Builder( object ):
     arguments.extend( ['--root', config.SOFTWARE_PATH] )
 
     # set the output mode to compiled
-    arguments.extend( ['-o', 'compiled'] )
+    arguments.extend( ['-o', 'script'] )
 
     # configure the compiler path
     arguments.extend( ['-c', config.CLOSURECOMPILER_PATH] )

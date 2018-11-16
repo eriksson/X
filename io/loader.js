@@ -48,6 +48,7 @@ goog.require('X.parserRAW');
 goog.require('X.parserSTL');
 goog.require('X.parserTRK');
 goog.require('X.parserVTK');
+goog.require('X.parserIMAGEJS');
 goog.require('goog.structs.Map');
 
 
@@ -389,6 +390,7 @@ X.loader.extensions = {
   'RZ': [X.parserRAW, true],
   'TXT': [X.parserLUT, null],
   'LUT': [X.parserLUT, null],
+  'IMAGEJS': [X.parserIMAGEJS, null],
   'PNG': [X.parserIMAGE, 'png'], // here we use the arraybuffer
   // response type
   'JPG': [X.parserIMAGE, 'jpeg'],

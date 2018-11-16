@@ -242,6 +242,19 @@ X.object.prototype.modified = function(propagateEvent) {
 };
 
 /**
+ * Fire a refresh event for this object.
+ *
+ * @param {?boolean=} propagateEvent An optional flag to stop propagating down to child classes.
+ */
+X.object.prototype.refreshed = function(propagateEvent) {
+
+  var refreshedEvent = new X.event.RefreshedEvent();
+  refreshedEvent._object = this;
+  this.dispatchEvent(refreshedEvent);
+
+};
+
+/**
  * Fire a remove event for this object.
  *
  * @param {?boolean=} propagateEvent An optional flag to stop propagating down to child classes.

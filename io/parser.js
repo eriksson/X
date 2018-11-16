@@ -679,6 +679,12 @@ X.parser.xyrasTransform = function(_sliceNormal, _XYNormal){
         (a*a+d*d-c*c-b*b),
         0
         );
+
+    var sin0 = _sliceNormal[1];
+    var cos0 = _sliceNormal[0];
+    var rotM = goog.vec.Mat4.createFloat32FromValues(cos0, -sin0, 0, 0, sin0, cos0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    goog.vec.Mat4.multMat(rotM, _RASToXY, _RASToXY);
+    
     }
 
 
@@ -955,8 +961,11 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
   sliceXY._texture = pixelTexture;
   // setup slice spacial information
   sliceXY._xyBBox = _xyBBox;
+  sliceXY._xyIBox = _solutionsXY;
   sliceXY._XYToRAS = _XYToRAS;
   sliceXY._XYToIJK = _XYToIJK;
+  sliceXY._RASToXY = _RASToXY;
+  sliceXY._sliceOrigin = _sliceOrigin;
   sliceXY._hmin = _hmin;
   sliceXY._hmax = _hmax;
   sliceXY._wmin = _wmin;
@@ -1035,7 +1044,9 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
 
   var _XYNormal = goog.vec.Vec3.createFloat32FromValues(0, 0, 1);
 
-  var _XYRASTransform = X.parser.xyrasTransform(_sliceNormal, _XYNormal);
+  var _norm = goog.vec.Vec3.createFloat32FromArray(_sliceNormal.map(function(x){return Math.abs(x)}));
+
+  var _XYRASTransform = X.parser.xyrasTransform(_norm, _XYNormal);
   var _RASToXY = _XYRASTransform[0];
   var _XYToRAS = _XYRASTransform[1];
   var _rasSpacing = goog.vec.Vec4.createFloat32FromValues(object._RASSpacing[0], object._RASSpacing[1], object._RASSpacing[2], 0);
@@ -1063,6 +1074,8 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   object._childrenInfo[_index]._sliceXYSpacing = [Math.abs(_xySpacing[0]), Math.abs(_xySpacing[1])];
   object._childrenInfo[_index]._sliceSpacing = _xySpacing[2];
   object._childrenInfo[_index]._sliceDirection = _sliceDirection;
+  object._childrenInfo[_index]._RASToXY = _RASToXY;
+  object._childrenInfo[_index]._XYToRAS = _XYToRAS;
 
   // ------------------------------------------
   // GET NUMBER OF SLICES
@@ -1226,7 +1239,8 @@ X.parser.prototype.reslice = function(object) {
   object._children[0]._children[Math.floor(object._childrenInfo[0]._nb/2)] = _slice;
 
   object._indexX = Math.floor(object._childrenInfo[0]._nb/2);
-  object._indexXold = Math.floor(object._childrenInfo[0]._nb/2);
+  object._children[0]._currentIndex = object._indexX;
+  object._indexXold = object._indexX;
 
   // ------------------------------------------
   // GO CORONAL
@@ -1273,7 +1287,8 @@ X.parser.prototype.reslice = function(object) {
   object._children[1]._children[Math.floor(object._childrenInfo[1]._nb/2)] = _slice;
 
   object._indexY = Math.floor(object._childrenInfo[1]._nb/2);
-  object._indexYold = Math.floor(object._childrenInfo[1]._nb/2);
+  object._children[1]._currentIndex = object._indexY;
+  object._indexYold = object._indexY;
 
   // ------------------------------------------
   // GO AXIAL
@@ -1319,7 +1334,8 @@ X.parser.prototype.reslice = function(object) {
   object._children[2]._children[Math.floor(object._childrenInfo[2]._nb/2)] = _slice;
 
   object._indexZ = Math.floor(object._childrenInfo[2]._nb/2);
-  object._indexZold = Math.floor(object._childrenInfo[2]._nb/2);
+  object._children[2]._currentIndex = object._indexZ;
+  object._indexZold = object._indexZ;
 
   X.TIMERSTOP(this._classname + '.reslice');
 

@@ -561,7 +561,7 @@ X.volume.prototype.slicing_ = function() {
         this._labelmap._children[xyz].modified(true);
       }
 
-      var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, null);
+      var _slice = X.parser.reslice2(_sliceOrigin, this._childrenInfo[xyz]._sliceXYSpacing, this._childrenInfo[xyz]._sliceNormal, this._childrenInfo[xyz]._color, this._BBox, this._IJKVolume, this, true, this._colorTable);
 
       if(this.hasLabelMap){
         _slice._labelmap = _slice._texture;
@@ -569,15 +569,18 @@ X.volume.prototype.slicing_ = function() {
       }
 
       _child._children[parseInt(currentIndex, 10)] = _slice;
+      _child._currentIndex = currentIndex;
 
       // add it to renderer!
       this._children[xyz].modified(true);
+    } else if(oldIndex !== currentIndex) {
+      _child.refreshed(true);
     }
     // DONE RESLICING!
 
     // hide the old slice
     var _oldSlice = _child._children[parseInt(oldIndex, 10)];
-    if(!this._volumeRendering){
+    if(!this._volumeRendering && _oldSlice){
 
       _oldSlice['visible'] = false;
 
@@ -588,7 +591,7 @@ X.volume.prototype.slicing_ = function() {
     var _currentSlice = _child._children[parseInt(currentIndex, 10)];
     _currentSlice['visible'] = true;
     _currentSlice._opacity = 1.0;
-
+  
     if(this._volumeRendering){
 
       _currentSlice._children[0]._visible = false;
@@ -900,7 +903,7 @@ X.volume.prototype.__defineGetter__('indexX', function() {
 X.volume.prototype.__defineSetter__('indexX', function(indexX) {
 
   if (goog.isNumber(indexX) && indexX >= 0
-      && indexX < this._slicesX._children.length) {
+      && indexX < this._slicesX._children_length) {
 
     this._indexX = indexX;
 
@@ -935,7 +938,7 @@ X.volume.prototype.__defineGetter__('indexY', function() {
 X.volume.prototype.__defineSetter__('indexY', function(indexY) {
 
   if (goog.isNumber(indexY) && indexY >= 0
-      && indexY < this._slicesY._children.length) {
+      && indexY < this._slicesY._children_length) {
 
     this._indexY = indexY;
 
@@ -970,7 +973,7 @@ X.volume.prototype.__defineGetter__('indexZ', function() {
 X.volume.prototype.__defineSetter__('indexZ', function(indexZ) {
 
   if (goog.isNumber(indexZ) && indexZ >= 0
-      && indexZ < this._slicesZ._children.length) {
+      && indexZ < this._slicesZ._children_length) {
 
     this._indexZ = indexZ;
 
@@ -1439,7 +1442,7 @@ X.volume.prototype.__defineGetter__('zColor', function() {
  *
  * @public
  */
-X.volume.prototype.sliceInfoChanged = function(index){
+X.volume.prototype.sliceInfoChanged = function(index, noReslice){
 
   // Hide slices
   this._children[index]['visible'] = false;
@@ -1468,7 +1471,12 @@ X.volume.prototype.sliceInfoChanged = function(index){
   X.parser.prototype.updateSliceInfo(index, this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceNormal, this);
   // Create empty array for all slices in this direction
   this._children[index]._children = [];
-  this._children[index]._children = new Array(this._childrenInfo[index]._nb);
+  this._children[index]._children_length = this._childrenInfo[index]._nb;
+  //this._children[index]._children = new Array(this._childrenInfo[index]._nb);
+
+  if(noReslice === true){
+    return;
+  }
 
   //attach labelmap
   if(this.hasLabelMap) {
@@ -1481,7 +1489,7 @@ X.volume.prototype.sliceInfoChanged = function(index){
     this._labelmap._children[index].modified();
   }
 
-  var _slice = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._IJKVolume, this, true, null);
+  var _slice = X.parser.reslice2(this._childrenInfo[index]._sliceOrigin, this._childrenInfo[index]._sliceXYSpacing, this._childrenInfo[index]._sliceNormal, this._childrenInfo[index]._color, this._BBox, this._IJKVolume, this, true, this._colorTable);
 
   window.console.log('modified!');
 

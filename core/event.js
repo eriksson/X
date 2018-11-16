@@ -127,6 +127,9 @@ X.event.events = {
   // the object modified event
   MODIFIED: X.event.uniqueId('modified'),
 
+  // the object refresh event
+  REFRESHED: X.event.uniqueId('update'),
+
   // the object remove event
   REMOVE: X.event.uniqueId('remove'),
   
@@ -400,6 +403,37 @@ X.event.ModifiedEvent = function() {
 };
 // inherit from goog.events.Event
 goog.inherits(X.event.ModifiedEvent, X.event);
+
+/**
+ * The refresh event to flag an object as 'dirty'.
+ * 
+ * @constructor
+ * @extends X.event
+ */
+X.event.RefreshedEvent = function() {
+
+  // call the default event constructor
+  goog.base(this, X.event.events.REFRESHED);
+  
+  /**
+   * The object which was refreshed.
+   * 
+   * @type {?X.object}
+   * @protected
+   */
+  this._object = null;
+  
+  /**
+   * A container for an X.base derived instance.
+   * 
+   * @type{?X.base}
+   * @protected
+   */
+  this._container = null;
+  
+};
+// inherit from goog.events.Event
+goog.inherits(X.event.RefreshedEvent, X.event);
 
 /**
  * The remove event to flag an object as 'dirty'.
