@@ -235,6 +235,8 @@ X.renderer3D = function () {
     'INTERMEDIATE_RENDERING': false
   };
 
+  this._continuousRendering = true;
+
 };
 // inherit from X.renderer
 goog.inherits(X.renderer3D, X.renderer);
@@ -257,6 +259,18 @@ goog.inherits(X.renderer3D, X.renderer);
 X.renderer3D.prototype.__defineGetter__('config', function () {
 
   return this._config;
+
+});
+
+X.renderer3D.prototype.__defineGetter__('continuousRendering', function () {
+
+  return this._continuousRendering;
+
+});
+
+X.renderer3D.prototype.__defineSetter__('continuousRendering', function (v) {
+
+  this._continuousRendering = v;
 
 });
 

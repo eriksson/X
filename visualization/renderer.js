@@ -1153,7 +1153,9 @@ X.renderer.prototype.render = function() {
   //
 
   // this starts the rendering loops and store its id
-  this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this));
+  this._AnimationFrameID = window.requestAnimationFrame((function(){
+    this._continuousRendering && this.render();
+  }).bind(this));
   eval("this.onRender()");
   this.render_(false, true);
   eval("this.afterRender()");
@@ -1206,9 +1208,13 @@ X.renderer.prototype.afterRender = function() {
  * @protected
  */
 X.renderer.prototype.render_ = function(picking, invoked) {
-
-
-
+  if(picking && !this._continuousRendering){ // schedule a new rendering event
+    // stop the rendering loop
+    window.cancelAnimationFrame(this._AnimationFrameID);
+    // this starts the rendering loops and store its id
+    this._AnimationFrameID = window.requestAnimationFrame(this.render.bind(this));
+  }
+  
 };
 
 
