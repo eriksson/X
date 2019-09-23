@@ -607,10 +607,11 @@ X.parserIMAGEJS.prototype.parseStream = function (data, object) {
   // 1.2.840.10008.1.2.2: Explicit VT Big Endian
   slice['transfer_syntax_uid'] = "1.2.840.10008.1.2"; //TODO: check this value
 
-  slice['rows'] = image.size.getWidth();
-  slice['columns'] = image.size.getHeight();
-  slice.bits_allocated = image.bits;
-  slice.pixel_representation = image.pixelRepresentation;
+  slice['rows'] = image.size.getHeight();
+  slice['columns'] = image.size.getWidth();
+  slice['bits_allocated'] = image.bits;
+  slice['pixel_representation'] = image.pixelRepresentation;
+  slice['photometric_interpretation'] = image.photometricInterpretation;
   slice['bits_stored'] = image.bitsStored;
   slice['number_of_images'] = image.series.images.length;
   slice['pixel_spacing'] = [image.spacing.getRowSpacing(), image.spacing.getColumnsSpacing(), Infinity];
@@ -622,19 +623,27 @@ X.parserIMAGEJS.prototype.parseStream = function (data, object) {
 
   slice['sop_instance_uid'] = image.id;
 
+  if (image.pixelRepresentation == X.dicomUtils.PixelRepresentation.UNSIGNED) {
+    slice['offset'] = 0;
+  } else {
+    var rs = image.rescale.getSlope();
+    var ri = image.rescale.getIntercept();
+    slice['offset'] = Math.pow(2, image.pixelPaddingValue != null ? image.bits : (rs == 1.0 && ri == 0.0 && image.pixelPaddingValue == null) ? image.bits : image.bitsStored) / 2;
+  }
+
   // check for data type and parse accordingly
   var _data = null;
   ////Get pixels
   switch (slice.bits_allocated) {
     case X.dicomUtils.BitsAllocated.B8:
-      if (image.pixelRepresentation === X.dicomUtils.UNSIGNED) {
+      if (image.pixelRepresentation === X.dicomUtils.PixelRepresentation.UNSIGNED) {
         _data = new Uint8Array(pixelData);
       } else {
         _data = new Int8Array(pixelData);
       }
       break;
     case X.dicomUtils.BitsAllocated.B16:
-      if (image.pixelRepresentation === X.dicomUtils.UNSIGNED) {
+      if (image.pixelRepresentation === X.dicomUtils.PixelRepresentation.UNSIGNED) {
         _data = new Uint16Array(pixelData);
       } else {
         _data = new Int16Array(pixelData);

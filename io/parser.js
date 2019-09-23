@@ -907,32 +907,20 @@ X.parser.reslice2 = function(_sliceOrigin, _sliceXYSpacing, _sliceNormal, _color
 
         // map to 0 if necessary
         var pixval = _IJKVolume[_k][_j][_i];
-        var pixelValue_r = 0;
-        var pixelValue_g = 0;
-        var pixelValue_b = 0;
-        var pixelValue_a = 0;
 
         if (colorTable) {
 
           // color table!
           var lookupValue = colorTable.get(pixval);
           // check for out of range and use the last label value in this case
-          if (!lookupValue) {
-
-          lookupValue = [ 0, .61, 0, 0, 1 ];
-
-          }
-
-          pixelValue_r = 255 * lookupValue[1];
-          pixelValue_g = 255 * lookupValue[2];
-          pixelValue_b = 255 * lookupValue[3];
-          pixelValue_a = 255 * lookupValue[4];
+          var pixelValue_r = pixelValue_g = pixelValue_b  = lookupValue[1] || 0;
+          var pixelValue_a = lookupValue[4];
 
         }
         else {
           // normalization should not happen here, only in the shaders/canvas??
-          pixelValue_r = pixelValue_g = pixelValue_b = 255 * ((pixval - object._min )/ (object._max - object._min));
-          pixelValue_a = 255;
+          var pixelValue_r = pixelValue_g = pixelValue_b = 255 * ((pixval - object._min )/ (object._max - object._min));
+          var pixelValue_a = 255;
         }
 
         textureForCurrentSlice[textureStartIndex] = pixelValue_r;

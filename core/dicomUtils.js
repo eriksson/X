@@ -37,7 +37,7 @@ X.dicomUtils.applyPixelPaddingToHULookupTable = function (img, HULookupTable) {
         if (paddingValuesStartIndex >= HULookupTable.length) {
             return;
         }
-        var isInverse = img.presentationLutShape == PresentationLutShape.INVERSE ? true : img.photometricInterpretation == X.dicomUtils.PhotometricInterpretation.MONOCHROME1 ? true : false;
+        var isInverse = img.presentationLutShape == X.dicomUtils.PresentationLutShape.INVERSE ? true : img.photometricInterpretation == X.dicomUtils.PhotometricInterpretation.MONOCHROME1 ? true : false;
         var fill;
         if (isInverse) {
             fill = HULookupTable[HULookupTable.length - 1];
@@ -85,7 +85,7 @@ X.dicomUtils.calculateLookupTable = function (img) {
 
     if (img.voiFunction == X.dicomUtils.VOIFunction.LINEAR) {
 
-        var unsigned = img.pixelRepresentation == 0; //PixelRepresentation.UNSIGNED
+        var unsigned = img.pixelRepresentation == X.dicomUtils.PixelRepresentation.UNSIGNED;
         // Get offset and window limits
         var offset = (unsigned == true) ? 0 : size / 2,
             xMin = offset + wc - 0.5 - (ww - 1) / 2,
@@ -111,9 +111,9 @@ X.dicomUtils.calculateLookupTable = function (img) {
 
     } else if (img.voiFunction == X.dicomUtils.VOIFunction.SIGMOID) {
 
-        var outRangeSize = (1 << BitsAllocated.B8) - 1;
-        var maxOutValue = img.pixelRepresentation == PixelRepresentation.SIGNED ? (1 << (BitsAllocated.B8 - 1)) - 1 : outRangeSize;
-        var minOutValue = img.pixelRepresentation == PixelRepresentation.SIGNED ? -(maxOutValue + 1) : 0;
+        var outRangeSize = (1 << X.dicomUtils.BitsAllocated.B8) - 1;
+        var maxOutValue = img.pixelRepresentation == X.dicomUtils.PixelRepresentation.SIGNED ? (1 << (X.dicomUtils.BitsAllocated.B8 - 1)) - 1 : outRangeSize;
+        var minOutValue = img.pixelRepresentation == X.dicomUtils.PixelRepresentation.SIGNED ? -(maxOutValue + 1) : 0;
         var minInValue = 0;
 
         var nFactor = -20.0; // factor defined by default in Dicom standard ( -20*2/10 = -4 )
@@ -165,15 +165,15 @@ X.dicomUtils.initColorTableFromLUT = function (img, colorTable, lut) {
     switch (img.photometricInterpretation) {
         case X.dicomUtils.PhotometricInterpretation.MONOCHROME1:
             for (var i = 0; i < lut.length; i++) {
-                r = g = b = ((255 - lut[i]) / 255.0);
-                colorTable.add(i, 'lut', r, g, b, 1);
+                r = g = b = (255 - lut[i]);
+                colorTable.add(i, 'lut', r, g, b, 255);
             }
             break;
 
         case X.dicomUtils.PhotometricInterpretation.MONOCHROME2:
             for (var i = 0; i < lut.length; i++) {
-                r = g = b = (lut[i] / 255.0);
-                colorTable.add(i - offset, 'lut', r, g, b, 1);
+                r = g = b = lut[i];
+                colorTable.add(i - offset, 'lut', r, g, b, 255);
             }
             break;
         default:
