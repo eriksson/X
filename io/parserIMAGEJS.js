@@ -101,6 +101,8 @@ X.parserIMAGEJS.prototype.parse = function (container, object, data, flag) {
 
     }
 
+    imageSeriesPushed = null;
+
     ////////////////////////////////////////////////////////////////////////
     // At this point:
     // -> slices are ordered by series
@@ -556,13 +558,25 @@ X.parserIMAGEJS.prototype.parse = function (container, object, data, flag) {
     volumeAttributes.RASOrigin = [_rasBB[0], _rasBB[2], _rasBB[4]];
 
 
-    X.dicomUtils.initColorTableFromLUT(data.image, object.colortable, X.dicomUtils.calculateLookupTable(data.image));
+    var centerImage = object.slices[Math.ceil(object.slices.length / 2)].ref_image;
+    X.dicomUtils.initColorTableFromLUT(centerImage, object.colortable, X.dicomUtils.calculateLookupTable(centerImage));
 
     // create the volume object
     object.create_(volumeAttributes);
 
+    for(var i = 0; i < object.slices.length; i++){
+        delete object.slices[i]['ref_image'];
+        delete object.slices[i]['data'];
+    }
+    delete object['slices'];
+    volumeAttributes = null;
+    first_image = null;
+    first_image_data = null;
+    series = null;
+
     // re-slice the data in SAGITTAL, CORONAL and AXIAL directions
     object._image = this.reslice(object);
+    object._data = null;
 
   }
 
@@ -587,7 +601,7 @@ X.parserIMAGEJS.prototype.parse = function (container, object, data, flag) {
  */
 X.parserIMAGEJS.prototype.parseStream = function (data, object) {
   // attach the given data
-  this._data = data;
+  //object._data = data;
 
   var image = data.image;
   var pixelData = data.pixelData;
@@ -654,6 +668,7 @@ X.parserIMAGEJS.prototype.parseStream = function (data, object) {
   }
 
   slice['data'] = _data;
+  slice['ref_image'] = data.image;
 
   object.slices.push(slice);
 

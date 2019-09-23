@@ -294,6 +294,7 @@ X.loader.prototype.parse = function(request, container, object) {
     // call the parse function and pass in the container, the object and the
     // data stream and some additional value
     _parser.parse(container, object, _data, flags);
+    container._filedata = null;
 
   }.bind(this), 100);
 

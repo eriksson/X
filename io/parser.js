@@ -462,7 +462,6 @@ X.parser.createIJKVolume = function(_data, _dims, _max, _min){
   // initiate variables
   // allocate images
   var _image = new Array(_dims[2]);
-  var _imageN = new Array(_dims[2]);
   var _nb_pix_per_slice = _dims[1] * _dims[0];
   var _pix_value = 0;
   var _i = 0;
@@ -479,17 +478,14 @@ X.parser.createIJKVolume = function(_data, _dims, _max, _min){
     _data_pointer = 0;
 
     // allocate images
-    _imageN[_k] = new Array(_dims[1]);
     _image[_k] = new Array(_dims[1]);
 
     for (_j = 0; _j < _dims[1]; _j++) {
 
       // allocate images
-      _imageN[_k][_j] = new _data.constructor(_dims[0]);
       _image[_k][_j] = new _data.constructor(_dims[0]);
       for (_i = 0; _i < _dims[0]; _i++) {
         _pix_value = _current_k[_data_pointer];
-        _imageN[_k][_j][_i] = 255 * ((_pix_value - _min) / (_max - _min));
         _image[_k][_j][_i] = _pix_value;
         _data_pointer++;
 
@@ -497,7 +493,7 @@ X.parser.createIJKVolume = function(_data, _dims, _max, _min){
     }
   }
 
-  return [_image, _imageN];
+  return _image;
 };
 
 /**
@@ -1146,11 +1142,8 @@ X.parser.prototype.reslice = function(object) {
   // Step 1: create 2 IJK volumes
   // 1 full res, 1 normalized [0-255]
   
-  var _IJKVolumes = X.parser.createIJKVolume(object._data, object._dimensions, object._max, object._min);
   // real volume
-  object._IJKVolume = _IJKVolumes[0];
-  // normalized volume
-  object._IJKVolumeN = _IJKVolumes[1];
+  object._IJKVolume = X.parser.createIJKVolume(object._data, object._dimensions, object._max, object._min);
   X.TIMER(this._classname + '.reslice');
 
   // ------------------------------------------
